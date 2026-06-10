@@ -1,0 +1,6 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+notepad_memory.jsonl
+.venv/
+.env
