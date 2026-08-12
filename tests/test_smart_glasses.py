@@ -8,7 +8,10 @@ from smart_glasses import Settings
 def make_settings(tmp_path: Path) -> Settings:
     return Settings(
         model="llava:7b",
+        backend="ollama",
         ollama_url="http://localhost:11434",
+        openrouter_url="https://openrouter.ai/api/v1",
+        api_key="",
         ollama_prompt="describe the view",
         ollama_interval=5.0,
         speak=False,
@@ -19,10 +22,22 @@ def make_settings(tmp_path: Path) -> Settings:
     )
 
 
-def test_parse_args_defaults_ollama_model(monkeypatch) -> None:
+def test_parse_args_defaults_openrouter_backend(monkeypatch) -> None:
     import smart_glasses
 
     monkeypatch.delenv("SMART_GLASSES_BACKEND", raising=False)
+    monkeypatch.delenv("OPENROUTER_MODEL", raising=False)
+    monkeypatch.delenv("OLLAMA_MODEL", raising=False)
+
+    settings = smart_glasses.parse_args([])
+    assert settings.backend == "openrouter"
+    assert settings.model == smart_glasses.OPENROUTER_DEFAULT_MODEL
+
+
+def test_parse_args_ollama_model(monkeypatch) -> None:
+    import smart_glasses
+
+    monkeypatch.setenv("SMART_GLASSES_BACKEND", "ollama")
     monkeypatch.delenv("OLLAMA_MODEL", raising=False)
 
     settings = smart_glasses.parse_args([])
